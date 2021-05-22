@@ -1,0 +1,234 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>关于回调和反射的简单分享 | liuyuxin'blog</title><meta name="keywords" content="java"><meta name="author" content="liuyuxin"><meta name="copyright" content="liuyuxin"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="调用同步调用123456789101112public class Person&amp;#123;    public void openDoor(Door door)&amp;#123;        door.open();         System.out.println(&quot;新的一天开始了&quot;);    &amp;#125;    &amp;#125;class Door&amp;#123;    publ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于回调和反射的简单分享">
+<meta property="og:url" content="http://liuyuxin-cloud.github.io/2021/05/22/%E5%85%B3%E4%BA%8E%E5%9B%9E%E8%B0%83%E5%92%8C%E5%8F%8D%E5%B0%84%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%86%E4%BA%AB/index.html">
+<meta property="og:site_name" content="liuyuxin&#39;blog">
+<meta property="og:description" content="调用同步调用123456789101112public class Person&amp;#123;    public void openDoor(Door door)&amp;#123;        door.open();         System.out.println(&quot;新的一天开始了&quot;);    &amp;#125;    &amp;#125;class Door&amp;#123;    publ">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://liuyuxin-cloud.github.io/img/cover.png">
+<meta property="article:published_time" content="2021-05-22T15:24:45.000Z">
+<meta property="article:modified_time" content="2021-05-22T15:33:27.226Z">
+<meta property="article:author" content="liuyuxin">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://liuyuxin-cloud.github.io/img/cover.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://liuyuxin-cloud.github.io/2021/05/22/%E5%85%B3%E4%BA%8E%E5%9B%9E%E8%B0%83%E5%92%8C%E5%8F%8D%E5%B0%84%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%86%E4%BA%AB/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '关于回调和反射的简单分享',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-05-22 23:33:27'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/img/favicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">6</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">2</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> Index</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/"><span> url</span></a></li><li><a class="site-page child" href="/fa-home"><span> icon</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> Tags</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/tags"><span> url</span></a></li><li><a class="site-page child" href="/fa-tags"><span> icon</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> Categories</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories"><span> url</span></a></li><li><a class="site-page child" href="/fa-bookmark"><span> icon</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> Archives</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives"><span> url</span></a></li><li><a class="site-page child" href="/fa-archive"><span> icon</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> About</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/about"><span> url</span></a></li><li><a class="site-page child" href="/fa-user-circle-o"><span> icon</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> Contact</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/contact"><span> url</span></a></li><li><a class="site-page child" href="/fa-envelope"><span> icon</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> Friends</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/friends"><span> url</span></a></li><li><a class="site-page child" href="/fa-address-book"><span> icon</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/cover.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">liuyuxin'blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> Index</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/"><span> url</span></a></li><li><a class="site-page child" href="/fa-home"><span> icon</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> Tags</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/tags"><span> url</span></a></li><li><a class="site-page child" href="/fa-tags"><span> icon</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> Categories</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories"><span> url</span></a></li><li><a class="site-page child" href="/fa-bookmark"><span> icon</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> Archives</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives"><span> url</span></a></li><li><a class="site-page child" href="/fa-archive"><span> icon</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> About</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/about"><span> url</span></a></li><li><a class="site-page child" href="/fa-user-circle-o"><span> icon</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> Contact</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/contact"><span> url</span></a></li><li><a class="site-page child" href="/fa-envelope"><span> icon</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> Friends</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/friends"><span> url</span></a></li><li><a class="site-page child" href="/fa-address-book"><span> icon</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">关于回调和反射的简单分享</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2021-05-22T15:24:45.000Z" title="Created 2021-05-22 23:24:45">2021-05-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2021-05-22T15:33:27.226Z" title="Updated 2021-05-22 23:33:27">2021-05-22</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="关于回调和反射的简单分享"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="调用"><a href="#调用" class="headerlink" title="调用"></a>调用</h1><h2 id="同步调用"><a href="#同步调用" class="headerlink" title="同步调用"></a>同步调用</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">openDoor</span><span class="params">(Door door)</span></span>&#123;</span><br><span class="line">        door.open(); </span><br><span class="line">        System.out.println(<span class="string">&quot;新的一天开始了&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Door</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">open</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out,println(<span class="string">&quot;门被打开了&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在打印“新的一天开始了”内容时，door.open()方法已经执行结束。（可能会造成阻塞问题）</p>
+<h2 id="异步调用"><a href="#异步调用" class="headerlink" title="异步调用"></a>异步调用</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">openDoor</span><span class="params">(Door door)</span></span>&#123;</span><br><span class="line">        <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable()&#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>&#123;</span><br><span class="line">                door.open();  </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).start();</span><br><span class="line">        System.out.println(<span class="string">&quot;新的一天开始了&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Door</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">open</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out,println(<span class="string">&quot;门被打开了&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>将调用放在一个新的线程中，后边的操作将不再依赖于调用方法的结束。（解决同步调用的阻塞问题）</p>
+<h2 id="回调"><a href="#回调" class="headerlink" title="回调"></a>回调</h2><p>双向调用模式</p>
+<p><em>A callback is a function this is passed as an argument to another function and is executed after its patent function has completed.</em></p>
+<p><em>回调是一个函数，它作为参数传递给另一个函数，并在其父函数完成后执行</em></p>
+<p>回调的思想是：<strong>一.类A的a()方法调用类B的b()方法</strong></p>
+<p>​                           <strong>二.类B的b()方法执行完毕主动调用类A的callback()方法</strong></p>
+<p>原理：首先创建一个回调对象，然后再创建一个控制器对象，将回调对象需要被调用的方法告诉控制器对象，控制器对象负责检查某个场景是否出现或某个条件是否满足，当满足时，自动调用回调对象的方法。</p>
+<h3 id="例一："><a href="#例一：" class="headerlink" title="例一："></a>例一：</h3><p>情景：老板A对员工B说，我现在交给你一个任务，并且我把我的电话号码给你，你一旦完成任务就给我打电话。</p>
+<p>1.创建一个回调接口</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">CallBack</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">acceptEvent</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2.创建回调接口的实现类，即本例中的老板类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Boss</span> <span class="keyword">implements</span> <span class="title">CallBack</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">acceptEvent</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;打电话给老板，告知已经完成工作了&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>3.创建控制类，也就是本例中的员工对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Employee</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    CallBack callBack;					</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Employee</span><span class="params">(CallBack callBack)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.callBack=callBack;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doWork</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;工作中....&quot;</span>);</span><br><span class="line">        callBack.acceptEvent();							<span class="comment">//接口实现类的对象调用接口中的方法</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>创建测试类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestMain</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">//创建控制器对象，将提供给他的回调对象传入</span></span><br><span class="line">        Employee employee=<span class="keyword">new</span> Employee(<span class="keyword">new</span> Boss());    <span class="comment">//传递一个实现接口的类的对象</span></span><br><span class="line">        <span class="comment">//启动控制器对象运行</span></span><br><span class="line">        employee.doWork();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在本例中，如果员工的工作结果可能不止向一类人传递，比如还会给经理、测试等人传递结果。这时我们可以将接收结果这个方法看做一种公共需求，接收到结果后后续处理操作也不一样，我们可以将这个方法定义到接口中，再在具体的类中进行实现。</p>
+<h3 id="例二：（安卓中的实例）"><a href="#例二：（安卓中的实例）" class="headerlink" title="例二：（安卓中的实例）"></a>例二：（安卓中的实例）</h3><p>在android中回调机制被大量的使用。比如，在Activity中定义了很多生命周期的不同状态要调用的方法，这些方法都是空实现，系统框架要调用，用户也要调用来实现。</p>
+<p>　　举个简单的例子就是Button的点击响应事件实现机制</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> android.app.Activity;  </span><br><span class="line"><span class="keyword">import</span> android.os.Bundle;  </span><br><span class="line"><span class="keyword">import</span> android.view.View;  </span><br><span class="line"><span class="keyword">import</span> android.view.View.OnClickListener;  </span><br><span class="line"><span class="keyword">import</span> android.widget.Button;  </span><br><span class="line"><span class="keyword">import</span> android.widget.Toast;  </span><br><span class="line">  </span><br><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment"> * 这个就相当于Class A </span></span><br><span class="line"><span class="comment"> * 实现了 OnClickListener接口</span></span><br><span class="line"><span class="comment"> */</span>  </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> <span class="keyword">implements</span> <span class="title">OnClickListener</span></span>&#123;  </span><br><span class="line">    <span class="comment">/** </span></span><br><span class="line"><span class="comment">     * Class A 包含Class B(View)的引用</span></span><br><span class="line"><span class="comment">     */</span>  </span><br><span class="line">    <span class="keyword">private</span> Button button;  </span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);  </span><br><span class="line">        setContentView(R.layout.activity_main);  </span><br><span class="line">        button = findViewById(R.id.button1);  </span><br><span class="line">          </span><br><span class="line">        <span class="comment">/** </span></span><br><span class="line"><span class="comment">         * Class A 调用View的方法,而Button extends View-----&gt;A类调用B类的某个方法 b </span></span><br><span class="line"><span class="comment">         */</span>  </span><br><span class="line">        button.setOnClickListener(<span class="keyword">this</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="comment">/** </span></span><br><span class="line"><span class="comment">     * 用户点击Button时调用的回调函数，你可以做你要做的事  </span></span><br><span class="line"><span class="comment">     */</span>  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;  </span><br><span class="line">        Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="string">&quot;OnClick&quot;</span>, Toast.LENGTH_LONG).show();  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="例三：（还是安卓实例）"><a href="#例三：（还是安卓实例）" class="headerlink" title="例三：（还是安卓实例）"></a>例三：（还是安卓实例）</h3><p> 点击文本框弹出对话框，将输入的文字显示在文本框中。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/liuyuxin-cloud/Android/tree/main/callbackdemo">https://github.com/liuyuxin-cloud/Android/tree/main/callbackdemo</a></p>
+<h1 id="反射"><a href="#反射" class="headerlink" title="反射"></a>反射</h1><h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>（1）Java反射机制的核心是在程序运行时动态加载类并获取类的详细信息，从而操作类或对象的属性和方法。本质是JVM得到class对象之后，再通过class对象进行反编译，从而获取对象的各种信息。</p>
+<p>（2）Java属于先编译再运行的语言，程序中对象的类型在编译期就确定下来了，而当程序在运行时可能需要动态加载某些类，这些类因为之前用不到，所以没有被加载到JVM。通过反射，可以在运行时动态地创建对象并调用其属性，不需要提前在编译期知道运行的对象是谁。</p>
+<p><strong>反射机制使java具有动态特性</strong></p>
+<h2 id="理解"><a href="#理解" class="headerlink" title="理解"></a>理解</h2><img src="C:\Users\86186\AppData\Roaming\Typora\typora-user-images\image-20210522223701302.png" alt="image-20210522223701302" style="zoom:40%;" />
+
+<p>关于java.lang.Class 类的理解</p>
+<p>​    将类编译生成字节码文件(.class)再用(java.exe)命令对每个字节码文件进行解释运行。相当于将某个字节码文件加载到内存中。</p>
+<p>加载到内存中的类称为运行时类，它们是Class类的实例。</p>
+<p>（java万物皆对象  我们的自定义类是Class类的对象）</p>
+<h2 id="用途"><a href="#用途" class="headerlink" title="用途"></a>用途</h2><p>1、反编译：.class–&gt;.java</p>
+<p>2、通过反射机制访问java对象的属性，方法，构造方法等</p>
+<p>3、当我们在使用IDE,比如Ecplise，IntelliJ IDEA时，当我们输入一个对象或者类，并想调用他的属性和方法是，一按点号，编译器就会自动列出他的属性或者方法，这里就是用到反射。</p>
+<p>4、反射最重要的用途就是开发各种通用框架。比如很多框架（Spring）都是配置化的（比如通过XML文件配置Bean），为了保证框架的通用性，他们可能需要根据配置文件加载不同的类或者对象，调用不同的方法，这个时候就必须使用到反射了，运行时动态加载需要的加载的对象。</p>
+<p>例子：</p>
+<img src="C:\Users\86186\AppData\Roaming\Typora\typora-user-images\image-20210522224630188.png" alt="image-20210522224630188" style="zoom:50%;" />
+
+<p>反射前对于自定义类的操作：</p>
+<p>1.通过构造器实例化对象</p>
+<p>2.通过对象调用内部属性、方法</p>
+<p>3.在类外部不可以通过对象调用内部私有(private)结构（封装性的限制）</p>
+<p>反射后：</p>
+<p>1.通过反射创建类的对象</p>
+<p>2.通过反射调用对象指定的属性、方法</p>
+<p>3.通过反射可调用类的私有结构</p>
+<p>什么时候使用反射？</p>
+<p>1.具有动态性时</p>
+<p>2.编译时不确定造哪个对象时</p>
+<h2 id="常用类"><a href="#常用类" class="headerlink" title="常用类"></a>常用类</h2><p>Java.lang.Class;</p>
+<p>Java.lang.reflect.Constructor;</p>
+<p>Java.lang.reflect.Field;</p>
+<p>Java.lang.reflect.Method;</p>
+<p>Java.lang.reflect.Modifier;</p>
+<h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><p><strong>1、获得Class：主要有三种方法：</strong></p>
+<p>（1）Object–&gt;getClass</p>
+<p>（2）任何数据类型（包括基本的数据类型）都有一个“静态”的class属性</p>
+<p>（3）通过class类的静态方法：forName(String className)（最常用）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//第一种方式获取Class对象  </span></span><br><span class="line">Student stu1 = <span class="keyword">new</span> Student();<span class="comment">//这一new 产生一个Student对象，一个Class对象。</span></span><br><span class="line">Class stuClass = stu1.getClass();<span class="comment">//获取Class对象</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//第二种方式获取Class对象</span></span><br><span class="line">Class stuClass2 = Student.class;</span><br><span class="line"></span><br><span class="line"><span class="comment">//第三种方式获取Class对象</span></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">	Class stuClass3 = Class.forName(<span class="string">&quot;fanshe.Student&quot;</span>);<span class="comment">//注意此字符串必须是真实路径，就是带包名的类路径，包名.类名</span></span><br><span class="line">&#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">	e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>2、判断是否为某个类的示例：</strong></p>
+<p>一般的，我们使用instanceof 关键字来判断是否为某个类的实例。同时我们也可以借助反射中Class对象的isInstance()方法来判断时候为某个类的实例，他是一个native方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">boolean</span> <span class="title">isInstance</span><span class="params">(Object obj)</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>3、创建实例：通过反射来生成对象主要有两种方法：</strong></p>
+<p>（1）使用Class对象的newInstance()方法来创建Class对象对应类的实例。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class&lt;?&gt; c = String.class;Object str = c.newInstance();</span><br></pre></td></tr></table></figure>
+
+<p>（2）先通过Class对象获取指定的Constructor对象，再调用Constructor对象的newInstance()方法来创建对象，这种方法可以用指定的构造器构造类的实例。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取String的Class对象</span></span><br><span class="line">Class&lt;?&gt; str = String.class;<span class="comment">//通过Class对象获取指定的Constructor构造器对象</span></span><br><span class="line">Constructor constructor=c.getConstructor(String.class);<span class="comment">//通过参数判断指定的构造器</span></span><br><span class="line"><span class="comment">//根据构造器创建实例：</span></span><br><span class="line">Object obj = constructor.newInstance(“hello reflection”);</span><br></pre></td></tr></table></figure>
+
+<p><strong>4、通过反射获取构造方法并使用：</strong></p>
+<p>（1）批量获取的方法：<br>public Constructor[] getConstructors()：所有”公有的”构造方法<br>public Constructor[] getDeclaredConstructors()：获取所有的构造方法(包括私有、受保护、默认、公有)</p>
+<p>（2）单个获取的方法，并调用：<br>public Constructor getConstructor(Class… parameterTypes):获取单个的”公有的”构造方法：<br>public Constructor getDeclaredConstructor(Class… parameterTypes):获取”某个构造方法”可以是私有的，或受保护、默认、公有；</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/a745233700/article/details/82893076">https://blog.csdn.net/a745233700/article/details/82893076</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined">liuyuxin</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://liuyuxin-cloud.github.io/2021/05/22/%E5%85%B3%E4%BA%8E%E5%9B%9E%E8%B0%83%E5%92%8C%E5%8F%8D%E5%B0%84%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%86%E4%BA%AB/">http://liuyuxin-cloud.github.io/2021/05/22/%E5%85%B3%E4%BA%8E%E5%9B%9E%E8%B0%83%E5%92%8C%E5%8F%8D%E5%B0%84%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%86%E4%BA%AB/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/java/">java</a></div><div class="post_share"><div class="social-share" data-image="/img/cover.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2021/05/21/Python%E7%AC%94%E8%AE%B0/"><img class="next-cover" src="/img/cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">Python笔记</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> Related Articles</span></div><div class="relatedPosts-list"><div><a href="/2021/05/21/java复习第三次/" title="java复习第三次"><img class="cover" src="/img/cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-21</div><div class="title">java复习第三次</div></div></a></div><div><a href="/2021/05/21/java复习第二次/" title="java复习第二次"><img class="cover" src="/img/cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-21</div><div class="title">java复习第二次</div></div></a></div><div><a href="/2021/05/21/java复习第一次/" title="java复习第一次"><img class="cover" src="/img/cover.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-21</div><div class="title">java复习第一次</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="/img/favicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">liuyuxin</div><div class="author-info__description">是某些让我相信万物亦快乐</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">6</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">Tags</div><div class="length-num">2</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B0%83%E7%94%A8"><span class="toc-number">1.</span> <span class="toc-text">调用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8C%E6%AD%A5%E8%B0%83%E7%94%A8"><span class="toc-number">1.1.</span> <span class="toc-text">同步调用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%82%E6%AD%A5%E8%B0%83%E7%94%A8"><span class="toc-number">1.2.</span> <span class="toc-text">异步调用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9E%E8%B0%83"><span class="toc-number">1.3.</span> <span class="toc-text">回调</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E4%B8%80%EF%BC%9A"><span class="toc-number">1.3.1.</span> <span class="toc-text">例一：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E4%BA%8C%EF%BC%9A%EF%BC%88%E5%AE%89%E5%8D%93%E4%B8%AD%E7%9A%84%E5%AE%9E%E4%BE%8B%EF%BC%89"><span class="toc-number">1.3.2.</span> <span class="toc-text">例二：（安卓中的实例）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E4%B8%89%EF%BC%9A%EF%BC%88%E8%BF%98%E6%98%AF%E5%AE%89%E5%8D%93%E5%AE%9E%E4%BE%8B%EF%BC%89"><span class="toc-number">1.3.3.</span> <span class="toc-text">例三：（还是安卓实例）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%8D%E5%B0%84"><span class="toc-number">2.</span> <span class="toc-text">反射</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-number">2.1.</span> <span class="toc-text">原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%90%86%E8%A7%A3"><span class="toc-number">2.2.</span> <span class="toc-text">理解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%A8%E9%80%94"><span class="toc-number">2.3.</span> <span class="toc-text">用途</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E7%B1%BB"><span class="toc-number">2.4.</span> <span class="toc-text">常用类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="toc-number">2.5.</span> <span class="toc-text">基本使用</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/05/22/%E5%85%B3%E4%BA%8E%E5%9B%9E%E8%B0%83%E5%92%8C%E5%8F%8D%E5%B0%84%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%86%E4%BA%AB/" title="关于回调和反射的简单分享"><img src="/img/cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="关于回调和反射的简单分享"/></a><div class="content"><a class="title" href="/2021/05/22/%E5%85%B3%E4%BA%8E%E5%9B%9E%E8%B0%83%E5%92%8C%E5%8F%8D%E5%B0%84%E7%9A%84%E7%AE%80%E5%8D%95%E5%88%86%E4%BA%AB/" title="关于回调和反射的简单分享">关于回调和反射的简单分享</a><time datetime="2021-05-22T15:24:45.000Z" title="Created 2021-05-22 23:24:45">2021-05-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/05/21/Python%E7%AC%94%E8%AE%B0/" title="Python笔记"><img src="/img/cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Python笔记"/></a><div class="content"><a class="title" href="/2021/05/21/Python%E7%AC%94%E8%AE%B0/" title="Python笔记">Python笔记</a><time datetime="2021-05-21T14:59:11.000Z" title="Created 2021-05-21 22:59:11">2021-05-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/05/21/java%E5%A4%8D%E4%B9%A0%E7%AC%AC%E4%B8%89%E6%AC%A1/" title="java复习第三次"><img src="/img/cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="java复习第三次"/></a><div class="content"><a class="title" href="/2021/05/21/java%E5%A4%8D%E4%B9%A0%E7%AC%AC%E4%B8%89%E6%AC%A1/" title="java复习第三次">java复习第三次</a><time datetime="2021-05-21T14:56:58.000Z" title="Created 2021-05-21 22:56:58">2021-05-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/05/21/java%E5%A4%8D%E4%B9%A0%E7%AC%AC%E4%BA%8C%E6%AC%A1/" title="java复习第二次"><img src="/img/cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="java复习第二次"/></a><div class="content"><a class="title" href="/2021/05/21/java%E5%A4%8D%E4%B9%A0%E7%AC%AC%E4%BA%8C%E6%AC%A1/" title="java复习第二次">java复习第二次</a><time datetime="2021-05-21T14:55:48.000Z" title="Created 2021-05-21 22:55:48">2021-05-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/05/21/java%E5%A4%8D%E4%B9%A0%E7%AC%AC%E4%B8%80%E6%AC%A1/" title="java复习第一次"><img src="/img/cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="java复习第一次"/></a><div class="content"><a class="title" href="/2021/05/21/java%E5%A4%8D%E4%B9%A0%E7%AC%AC%E4%B8%80%E6%AC%A1/" title="java复习第一次">java复习第一次</a><time datetime="2021-05-21T14:49:46.000Z" title="Created 2021-05-21 22:49:46">2021-05-21</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/img/index.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By liuyuxin</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="false"></script><script defer="defer" id="fluttering_ribbon" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
